@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Parking Payment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+  <style>main{max-width:420px}</style>
+</head>
+<body>
+  <nav class="top">
+    <h1>💳 Parking Payment</h1>
+    <a href="/">Admin</a>
+  </nav>
+  <main>
+    <section class="card">
+      <p>Enter your <b>Ticket</b> and <b>Amount (₹)</b> to pay using UPI / GPay / PhonePe / cards.</p>
+      <div class="grid">
+        <input id="ticket" placeholder="Ticket (e.g., T-...)" class="span-2" />
+        <input id="amount" type="number" min="1" step="1" placeholder="Amount in ₹" class="span-2" />
+        <button id="payBtn" class="primary span-2">Pay with Razorpay</button>
+      </div>
+      <div id="msg" class="msg"></div>
+    </section>
+  </main>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    async function createOrder(ticket, amount){
+      const r = await fetch('/api/create-order', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ ticket, amount }) });
+      return r.json();
+    }
+    document.getElementById('payBtn').onclick = async () => {
+      const ticket = document.getElementById('ticket').value.trim();
+      const amount = Number(document.getElementById('amount').value);
+      if(!ticket || !amount){ document.getElementById('msg').textContent = 'Enter ticket and amount'; return; }
+      const resp = await createOrder(ticket, amount);
+      if(!resp.ok){ document.getElementById('msg').textContent = resp.error || 'Failed to create order'; return; }
+      const { keyId, order } = resp;
+      const rzp = new Razorpay({
+        key: keyId,
+        amount: order.amount,
+        currency: order.currency,
+        name: "Railway Station Parking",
+        description: "Payment for " + ticket,
+        order_id: order.id,
+        notes: { ticket },
+        handler: function () {
+          document.getElementById('msg').textContent = 'Payment initiated. Confirmation will arrive once captured.';
+        },
+        theme: { color: "#22c55e" }
+      });
+      rzp.on('payment.failed', function (response){
+        document.getElementById('msg').textContent = "Payment failed: " + response.error.description;
+      });
+      rzp.open();
+    };
+  </script>
+</body>
+</html>
