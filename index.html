@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Parking Admin</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="top">
+    <h1>🚗 Parking Admin</h1>
+    <div class="links">
+      <a href="payment.html">Payment</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="card">
+      <h2>Check-In</h2>
+      <form id="checkinForm" class="grid">
+        <input id="vehicleNo" placeholder="Vehicle No (e.g., MH12AB1234)" required />
+        <input id="owner" placeholder="Owner name" required />
+        <input id="phone" placeholder="Phone (optional)" />
+        <select id="type">
+          <option value="">Vehicle Type</option>
+          <option>2 Wheeler</option>
+          <option>4 Wheeler</option>
+          <option>Heavy</option>
+        </select>
+        <input id="notes" placeholder="Notes (optional)" class="span-2"/>
+        <button class="primary span-2" type="submit">Check-In</button>
+      </form>
+      <div id="checkinMsg" class="msg"></div>
+    </section>
+
+    <section class="card">
+      <h2>Check-Out</h2>
+      <form id="checkoutForm" class="grid">
+        <input id="vehicleNoOut" placeholder="Vehicle No" required />
+        <button class="primary" type="submit">Check-Out</button>
+      </form>
+      <div id="checkoutMsg" class="msg"></div>
+    </section>
+
+    <section class="card">
+      <h2>Records</h2>
+      <div style="overflow:auto">
+        <table id="tbl" class="table">
+          <thead>
+            <tr>
+              <th>Ticket</th><th>Vehicle</th><th>Owner</th><th>Phone</th>
+              <th>Type</th><th>Check-In</th><th>Check-Out</th><th>Duration</th><th>Status</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="main.js"></script>
+</body>
+</html>
